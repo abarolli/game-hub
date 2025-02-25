@@ -7,7 +7,7 @@ function CategoriesList({ categories }: { categories: Category[] }) {
   return (
     <Stack>
       {categories.map((category) => (
-        <Box mb="15px">
+        <Box key={category.label} mb="15px">
           <CategoriesListItem label={category.label} imgSrc={category.imgSrc} />
         </Box>
       ))}
