@@ -4,7 +4,7 @@ import NavBar from "./components/NavBar";
 import CategoriesList from "./components/CategoriesList";
 import { Category } from "./components/CategoriesListItem";
 import GameCard, { GameProps, Platform } from "./components/GameCard";
-import { Box, Flex, SimpleGrid, Heading } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Heading, GridItem } from "@chakra-ui/react";
 import rawgClient from "./service/apiClient";
 
 import platformIcons from "./uiConfigs/platformIcons";
@@ -61,7 +61,7 @@ function App() {
     <>
       <NavBar />
       <Flex>
-        <Box w="300px">
+        <Box w="300px" p="20px">
           <Heading mb="30px">Genres</Heading>
           <CategoriesList categories={categories} />
         </Box>
@@ -72,6 +72,11 @@ function App() {
           padding="20px"
           flex="1"
         >
+          <GridItem gridColumn="1 / -1">
+            <Heading fontSize="2rem" fontWeight="bolder">
+              Games
+            </Heading>
+          </GridItem>
           {games.map((game) => {
             return <GameCard key={game.id} {...game} />;
           })}
