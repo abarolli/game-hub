@@ -2,12 +2,15 @@ import { Badge, Card, HStack, Image } from "@chakra-ui/react";
 import React from "react";
 import { IconType } from "react-icons";
 
-export interface Platform {
-  name: string;
+import platformIcons from "@/uiConfigs/platformIcons";
+import Entity from "./Entity";
+
+export interface Platform extends Entity {
+  name: keyof typeof platformIcons;
   icon: IconType;
 }
 
-export interface GameProps {
+export interface GameProps extends Entity {
   imgSrc: string;
   gameTitle: string;
   criticScore: number;
@@ -15,16 +18,16 @@ export interface GameProps {
 }
 
 function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
+  const platformsAsIcons = platforms.map((platform) => (
+    <platform.icon key={platform.id} />
+  ));
+
   return (
-    <Card.Root maxW="sm">
+    <Card.Root>
       <Image src={imgSrc} alt={gameTitle} />
       <Card.Body>
         <HStack mb="20px" justifyContent="space-between">
-          <HStack>
-            {platforms.map((platform) => (
-              <platform.icon />
-            ))}
-          </HStack>
+          <HStack>{platformsAsIcons}</HStack>
           <Badge w="fit" paddingX="10px" colorPalette="green">
             {criticScore}
           </Badge>
