@@ -8,7 +8,7 @@ function CategoriesList({ categories }: { categories: Category[] }) {
     <Stack>
       {categories.map((category) => (
         <Box mb="15px">
-          <CategoriesListItem label={category.label} imgUrl={category.imgUrl} />
+          <CategoriesListItem label={category.label} imgSrc={category.imgSrc} />
         </Box>
       ))}
     </Stack>
