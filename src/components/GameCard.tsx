@@ -7,14 +7,14 @@ export interface Platform {
   icon: IconType;
 }
 
-interface Props {
+export interface GameProps {
   imgSrc: string;
   gameTitle: string;
   criticScore: number;
   platforms: Platform[];
 }
 
-function GameCard({ gameTitle, imgSrc, criticScore, platforms }: Props) {
+function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
   return (
     <Card.Root maxW="sm">
       <Image src={imgSrc} alt={gameTitle} />
