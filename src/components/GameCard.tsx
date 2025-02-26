@@ -24,7 +24,7 @@ function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
 
   return (
     <Card.Root rounded="xl">
-      <Image h="sm" src={imgSrc} alt={gameTitle} roundedTop="xl" />
+      <Image h="xs" src={imgSrc} alt={gameTitle} roundedTop="xl" />
       <Card.Body>
         <HStack mb="20px" justifyContent="space-between">
           <HStack>{platformsAsIcons}</HStack>
