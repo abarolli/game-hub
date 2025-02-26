@@ -14,7 +14,7 @@ interface SelectionProps {
 
 export default function Selection({ collection, placeholder }: SelectionProps) {
   return (
-    <SelectRoot collection={collection}>
+    <SelectRoot variant="subtle" collection={collection}>
       <SelectTrigger>
         <SelectValueText placeholder={placeholder} />
       </SelectTrigger>
