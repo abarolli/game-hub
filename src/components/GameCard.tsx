@@ -1,6 +1,6 @@
-import { Badge, Card, HStack, Image } from "@chakra-ui/react";
 import React from "react";
 import { IconType } from "react-icons";
+import { Badge, Card, HStack, Image } from "@chakra-ui/react";
 
 import platformIcons from "@/uiConfigs/platformIcons";
 import Entity from "./Entity";
@@ -23,8 +23,8 @@ function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
   ));
 
   return (
-    <Card.Root>
-      <Image src={imgSrc} alt={gameTitle} />
+    <Card.Root rounded="xl">
+      <Image h="sm" src={imgSrc} alt={gameTitle} roundedTop="xl" />
       <Card.Body>
         <HStack mb="20px" justifyContent="space-between">
           <HStack>{platformsAsIcons}</HStack>
