@@ -5,10 +5,12 @@ import CategoriesList from "./components/CategoriesList";
 import { Category } from "./components/CategoriesListItem";
 import GameCard, { GameProps, Platform } from "./components/GameCard";
 import { Box, Flex, SimpleGrid, Heading, GridItem } from "@chakra-ui/react";
-import rawgClient from "./service/apiClient";
 
+import rawgClient from "./service/apiClient";
 import platformIcons from "./uiConfigs/platformIcons";
+
 import Entity from "./components/Entity";
+import RawgHTTPService from "./service/rawgHttpService";
 
 const categories: Category[] = [
   {
@@ -30,32 +32,42 @@ interface RawgGame extends Entity {
   parent_platforms: { platform: Platform }[];
 }
 
+interface RawgGenre extends Entity {
+  name: string;
+  background_image: string;
+}
+
 function App() {
   const [games, setGames] = useState<GameProps[]>([]);
+  const gamesHttpService = new RawgHTTPService<RawgGame>("/games", rawgClient);
+  const genresHttpService = new RawgHTTPService<RawgGame>(
+    "/genres",
+    rawgClient
+  );
 
-  useEffect(() => {
+  const populateGames = () => {
     const newGames: GameProps[] = [];
-    rawgClient.get<{ results: RawgGame[] }>("/games").then(({ data }) => {
-      for (let result of data.results) {
-        const game = {
-          id: result.id,
-          gameTitle: result.name,
-          imgSrc: result.background_image,
-          criticScore: result.metacritic,
-          platforms: result.parent_platforms.map((p) => {
+    gamesHttpService.getAll().then((games) => {
+      for (let game of games) {
+        newGames.push({
+          id: game.id,
+          gameTitle: game.name,
+          imgSrc: game.background_image,
+          criticScore: game.metacritic,
+          platforms: game.parent_platforms.map((p) => {
             return {
               id: p.platform.id,
               name: p.platform.name,
               icon: platformIcons[p.platform.name],
             } as Platform;
           }),
-        };
-        newGames.push(game);
+        });
       }
-
       setGames(newGames);
     });
-  }, []);
+  };
+
+  useEffect(populateGames, []);
 
   return (
     <>
@@ -66,8 +78,8 @@ function App() {
           <CategoriesList categories={categories} />
         </Box>
         <SimpleGrid
-          minChildWidth="sm"
-          columnGap="40px"
+          minChildWidth="xs"
+          columnGap="20px"
           rowGap="20px"
           padding="20px"
           flex="1"
