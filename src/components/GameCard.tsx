@@ -2,11 +2,11 @@ import React from "react";
 import { IconType } from "react-icons";
 import { Badge, Card, HStack, Image } from "@chakra-ui/react";
 
-import platformIcons from "@/uiConfigs/platformIcons";
+import { PlatformType } from "@/uiConfigs/platformIcons";
 import Entity from "./Entity";
 
 export interface Platform extends Entity {
-  name: keyof typeof platformIcons;
+  name: PlatformType;
   icon: IconType;
 }
 

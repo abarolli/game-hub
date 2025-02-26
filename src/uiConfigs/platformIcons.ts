@@ -9,7 +9,7 @@ import {
   FaXbox,
 } from "react-icons/fa";
 
-export default {
+const platformIcons = {
   PC: FaWindows,
   PlayStation: FaPlaystation,
   Xbox: FaXbox,
@@ -20,3 +20,7 @@ export default {
   iOS: FaAppStoreIos,
   Web: BsBrowserChrome,
 };
+
+export type PlatformType = keyof typeof platformIcons;
+
+export default platformIcons;
