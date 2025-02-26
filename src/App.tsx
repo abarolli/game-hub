@@ -1,29 +1,24 @@
 import React, { useEffect, useState } from "react";
 
 import NavBar from "./components/NavBar";
-import CategoriesList from "./components/CategoriesList";
-import { Category } from "./components/CategoriesListItem";
+import GenreList from "./components/GenreList";
+import { GenreProps } from "./components/GenreListItem";
 import GameCard, { GameProps, Platform } from "./components/GameCard";
-import { Box, Flex, SimpleGrid, Heading, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  SimpleGrid,
+  Heading,
+  GridItem,
+  createListCollection,
+} from "@chakra-ui/react";
 
 import rawgClient from "./service/apiClient";
-import platformIcons from "./uiConfigs/platformIcons";
+import platformIcons, { PlatformType } from "./uiConfigs/platformIcons";
 
 import Entity from "./components/Entity";
 import RawgHTTPService from "./service/rawgHttpService";
-
-const categories: Category[] = [
-  {
-    label: "Indie",
-    imgSrc:
-      "https://media.rawg.io/media/games/b4e/b4e4c73d5aa4ec66bbf75375c4847a2b.jpg",
-  },
-  {
-    label: "Action",
-    imgSrc:
-      "https://media.rawg.io/media/games/49c/49c3dfa4ce2f6f140cc4825868e858cb.jpg",
-  },
-];
+import Selection from "./components/Selection";
 
 interface RawgGame extends Entity {
   name: string;
@@ -34,13 +29,14 @@ interface RawgGame extends Entity {
 
 interface RawgGenre extends Entity {
   name: string;
-  background_image: string;
+  image_background: string;
 }
 
 function App() {
   const [games, setGames] = useState<GameProps[]>([]);
+  const [genres, setGenres] = useState<GenreProps[]>([]);
   const gamesHttpService = new RawgHTTPService<RawgGame>("/games", rawgClient);
-  const genresHttpService = new RawgHTTPService<RawgGame>(
+  const genresHttpService = new RawgHTTPService<RawgGenre>(
     "/genres",
     rawgClient
   );
@@ -67,15 +63,40 @@ function App() {
     });
   };
 
-  useEffect(populateGames, []);
+  const populateGenres = () => {
+    const newGenres: GenreProps[] = [];
+    genresHttpService.getAll().then((genres) => {
+      for (let genre of genres) {
+        console.log(genre.image_background);
+        newGenres.push({ label: genre.name, imgSrc: genre.image_background });
+      }
+      setGenres(newGenres);
+    });
+  };
 
+  useEffect(populateGames, []);
+  useEffect(populateGenres, []);
+
+  const getPlatforms = () => {
+    const platforms: PlatformType[] = [];
+    for (let platform in platformIcons)
+      platforms.push(platform as PlatformType);
+    return platforms;
+  };
+  const platformOptions = createListCollection({
+    items: getPlatforms().map((platform) => {
+      return { label: platform, value: platform };
+    }),
+  });
   return (
     <>
-      <NavBar />
+      <Box mb="30px">
+        <NavBar />
+      </Box>
       <Flex>
         <Box w="300px" p="20px">
           <Heading mb="30px">Genres</Heading>
-          <CategoriesList categories={categories} />
+          <GenreList genres={genres} />
         </Box>
         <SimpleGrid
           minChildWidth="xs"
@@ -85,9 +106,12 @@ function App() {
           flex="1"
         >
           <GridItem gridColumn="1 / -1">
-            <Heading fontSize="2rem" fontWeight="bolder">
+            <Heading mb="20px" fontSize="2rem" fontWeight="bolder">
               Games
             </Heading>
+            <Box w="175px">
+              <Selection collection={platformOptions} placeholder="Platforms" />
+            </Box>
           </GridItem>
           {games.map((game) => {
             return <GameCard key={game.id} {...game} />;
