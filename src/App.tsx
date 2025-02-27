@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import NavBar from "./components/NavBar";
-import GenreList from "./components/GenreList";
-import { GenreProps } from "./components/GenreListItem";
-import GameCard, { GameProps, Platform } from "./components/GameCard";
 import {
   Box,
   Flex,
@@ -12,10 +7,14 @@ import {
   GridItem,
   createListCollection,
 } from "@chakra-ui/react";
+import { SubmitHandler } from "react-hook-form";
 
+import GameCard, { GameProps, Platform } from "./components/GameCard";
+import NavBar, { SearchForm } from "./components/NavBar";
+import GenreList from "./components/GenreList";
+import { GenreProps } from "./components/GenreListItem";
 import rawgClient from "./service/apiClient";
 import platformIcons, { PlatformType } from "./uiConfigs/platformIcons";
-
 import Entity from "./components/Entity";
 import RawgHTTPService from "./service/rawgHttpService";
 import Selection from "./components/Selection";
@@ -41,35 +40,40 @@ function App() {
     rawgClient
   );
 
-  const populateGames = () => {
+  const rawgGameToGameProps = (game: RawgGame): GameProps => {
+    return {
+      id: game.id,
+      gameTitle: game.name,
+      imgSrc: game.background_image,
+      criticScore: game.metacritic,
+      platforms: game.parent_platforms.map((p) => {
+        return {
+          id: p.platform.id,
+          name: p.platform.name,
+          icon: platformIcons[p.platform.name],
+        } as Platform;
+      }),
+    };
+  };
+
+  const updateGames = (games: RawgGame[]) => {
     const newGames: GameProps[] = [];
-    gamesHttpService.getAll().then((games) => {
-      for (let game of games) {
-        newGames.push({
-          id: game.id,
-          gameTitle: game.name,
-          imgSrc: game.background_image,
-          criticScore: game.metacritic,
-          platforms: game.parent_platforms.map((p) => {
-            return {
-              id: p.platform.id,
-              name: p.platform.name,
-              icon: platformIcons[p.platform.name],
-            } as Platform;
-          }),
-        });
-      }
-      setGames(newGames);
-    });
+    for (let game of games) newGames.push(rawgGameToGameProps(game));
+    setGames(newGames);
+  };
+
+  const populateGames = () => {
+    gamesHttpService.getAll().then((games) => updateGames(games));
+  };
+
+  const rawgGenreToGenreProps = (genre: RawgGenre): GenreProps => {
+    return { label: genre.name, imgSrc: genre.image_background };
   };
 
   const populateGenres = () => {
-    const newGenres: GenreProps[] = [];
     genresHttpService.getAll().then((genres) => {
-      for (let genre of genres) {
-        console.log(genre.image_background);
-        newGenres.push({ label: genre.name, imgSrc: genre.image_background });
-      }
+      const newGenres: GenreProps[] = [];
+      for (let genre of genres) newGenres.push(rawgGenreToGenreProps(genre));
       setGenres(newGenres);
     });
   };
@@ -83,6 +87,7 @@ function App() {
       platforms.push(platform as PlatformType);
     return platforms;
   };
+
   const platformOptions = createListCollection({
     items: getPlatforms().map((platform) => {
       return { label: platform, value: platform };
