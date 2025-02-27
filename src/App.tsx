@@ -6,6 +6,7 @@ import {
   Heading,
   GridItem,
   createListCollection,
+  ListCollection,
 } from "@chakra-ui/react";
 import { SubmitHandler } from "react-hook-form";
 
@@ -14,10 +15,10 @@ import NavBar, { SearchForm } from "./components/NavBar";
 import GenreList from "./components/GenreList";
 import { GenreProps } from "./components/GenreListItem";
 import rawgClient from "./service/apiClient";
-import platformIcons, { PlatformType } from "./uiConfigs/platformIcons";
+import platformIcons from "./uiConfigs/platformIcons";
 import Entity from "./components/Entity";
 import RawgHTTPService from "./service/rawgHttpService";
-import Selection from "./components/Selection";
+import Selection, { SelectionInfo } from "./components/Selection";
 
 interface RawgGame extends Entity {
   name: string;
@@ -31,12 +32,23 @@ interface RawgGenre extends Entity {
   image_background: string;
 }
 
+interface RawgPlatform extends Entity {
+  name: string;
+}
+
 function App() {
   const [games, setGames] = useState<GameProps[]>([]);
   const [genres, setGenres] = useState<GenreProps[]>([]);
+  const [platformOptions, setPlatformOptions] =
+    useState<ListCollection<SelectionInfo>>();
+
   const gamesHttpService = new RawgHTTPService<RawgGame>("/games", rawgClient);
   const genresHttpService = new RawgHTTPService<RawgGenre>(
     "/genres",
+    rawgClient
+  );
+  const platformsHttpService = new RawgHTTPService<RawgPlatform>(
+    "/platforms/lists/parents",
     rawgClient
   );
 
@@ -78,25 +90,35 @@ function App() {
     });
   };
 
-  useEffect(populateGames, []);
-  useEffect(populateGenres, []);
-
-  const getPlatforms = () => {
-    const platforms: PlatformType[] = [];
-    for (let platform in platformIcons)
-      platforms.push(platform as PlatformType);
-    return platforms;
+  const populatePlatformOptions = () => {
+    platformsHttpService.getAll().then((platforms) => {
+      setPlatformOptions(
+        createListCollection({
+          items: platforms.map((platform) => {
+            return {
+              id: platform.id,
+              label: platform.name,
+              value: platform.name,
+            };
+          }),
+        })
+      );
+    });
   };
 
-  const platformOptions = createListCollection({
-    items: getPlatforms().map((platform) => {
-      return { label: platform, value: platform };
-    }),
-  });
+  useEffect(populateGames, []);
+  useEffect(populateGenres, []);
+  useEffect(populatePlatformOptions, []);
 
   const searchHandler: SubmitHandler<SearchForm> = (data) => {
     gamesHttpService
       .find({ search: data.searchValue })
+      .then((games) => updateGames(games));
+  };
+
+  const platformSelectHandler = (id: number) => {
+    gamesHttpService
+      .find({ parent_platforms: id })
       .then((games) => updateGames(games));
   };
 
@@ -122,7 +144,13 @@ function App() {
               Games
             </Heading>
             <Box w="175px">
-              <Selection collection={platformOptions} placeholder="Platforms" />
+              {platformOptions && (
+                <Selection
+                  onSelect={platformSelectHandler}
+                  collection={platformOptions}
+                  placeholder="Platforms"
+                />
+              )}
             </Box>
           </GridItem>
           {games.map((game) => {
