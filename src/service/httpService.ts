@@ -11,6 +11,18 @@ export default class HTTPService<T> {
   getAll<ResultType = T>(): Promise<ResultType[]> {
     return this.apiClient
       .get<{ results: ResultType[] }>(this.url)
-      .then(({ data }) => data.results);
+      .then(({ data }) => {
+        console.log(data);
+        return data.results;
+      });
+  }
+
+  find<ResultType = T>(queryParams: any) {
+    return this.apiClient
+      .get<{ results: ResultType[] }>(this.url, { params: queryParams })
+      .then(({ data }) => {
+        console.log(data);
+        return data.results;
+      });
   }
 }
