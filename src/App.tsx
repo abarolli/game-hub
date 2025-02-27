@@ -24,7 +24,7 @@ interface RawgGame extends Entity {
   name: string;
   metacritic: number;
   background_image: string;
-  parent_platforms: { platform: Platform }[];
+  parent_platforms?: { platform: Platform }[];
 }
 
 interface RawgGenre extends Entity {
@@ -37,6 +37,7 @@ interface RawgPlatform extends Entity {
 }
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState("");
   const [games, setGames] = useState<GameProps[]>([]);
   const [genres, setGenres] = useState<GenreProps[]>([]);
   const [platformOptions, setPlatformOptions] =
@@ -58,13 +59,14 @@ function App() {
       gameTitle: game.name,
       imgSrc: game.background_image,
       criticScore: game.metacritic,
-      platforms: game.parent_platforms.map((p) => {
-        return {
-          id: p.platform.id,
-          name: p.platform.name,
-          icon: platformIcons[p.platform.name],
-        } as Platform;
-      }),
+      platforms:
+        game.parent_platforms?.map((p) => {
+          return {
+            id: p.platform.id,
+            name: p.platform.name,
+            icon: platformIcons[p.platform.name],
+          } as Platform;
+        }) || [],
     };
   };
 
@@ -111,9 +113,10 @@ function App() {
   useEffect(populatePlatformOptions, []);
 
   const searchHandler: SubmitHandler<SearchForm> = (data) => {
-    gamesHttpService
-      .find({ search: data.searchValue })
-      .then((games) => updateGames(games));
+    gamesHttpService.find({ search: data.searchValue }).then((games) => {
+      updateGames(games);
+      setSearchTerm(data.searchValue);
+    });
   };
 
   const platformSelectHandler = (id: number) => {
@@ -146,7 +149,7 @@ function App() {
           >
             <GridItem gridColumn="1 / -1">
               <Heading mb="20px" fontSize="2rem" fontWeight="bolder">
-                Games
+                {searchTerm || "Games"}
               </Heading>
               <Box w="175px">
                 {platformOptions && (
