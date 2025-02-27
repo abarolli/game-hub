@@ -127,36 +127,38 @@ function App() {
       <Box mb="30px">
         <NavBar onSubmit={searchHandler} />
       </Box>
-      <Flex>
-        <Box w="300px" p="20px">
-          <Heading mb="30px">Genres</Heading>
-          <GenreList genres={genres} />
-        </Box>
-        <SimpleGrid
-          minChildWidth="xs"
-          columnGap="20px"
-          rowGap="20px"
-          padding="20px"
-          flex="1"
-        >
-          <GridItem gridColumn="1 / -1">
-            <Heading mb="20px" fontSize="2rem" fontWeight="bolder">
-              Games
-            </Heading>
-            <Box w="175px">
-              {platformOptions && (
-                <Selection
-                  onSelect={platformSelectHandler}
-                  collection={platformOptions}
-                  placeholder="Platforms"
-                />
-              )}
-            </Box>
-          </GridItem>
-          {games.map((game) => {
-            return <GameCard key={game.id} {...game} />;
-          })}
-        </SimpleGrid>
+      <Flex justifyContent="center">
+        <Flex maxW="1500px" w="100%">
+          <Box w="300px" p="20px">
+            <Heading mb="30px">Genres</Heading>
+            <GenreList genres={genres} />
+          </Box>
+          <SimpleGrid
+            minChildWidth="xs"
+            columnGap="20px"
+            rowGap="20px"
+            padding="20px"
+            flex="1"
+          >
+            <GridItem gridColumn="1 / -1">
+              <Heading mb="20px" fontSize="2rem" fontWeight="bolder">
+                Games
+              </Heading>
+              <Box w="175px">
+                {platformOptions && (
+                  <Selection
+                    onSelect={platformSelectHandler}
+                    collection={platformOptions}
+                    placeholder="Platforms"
+                  />
+                )}
+              </Box>
+            </GridItem>
+            {games.map((game) => {
+              return <GameCard key={game.id} {...game} />;
+            })}
+          </SimpleGrid>
+        </Flex>
       </Flex>
     </>
   );
