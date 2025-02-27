@@ -8,6 +8,7 @@ import {
   FaWindows,
   FaXbox,
 } from "react-icons/fa";
+import { SiAtari, SiSega } from "react-icons/si";
 
 const platformIcons = {
   PC: FaWindows,
@@ -19,6 +20,8 @@ const platformIcons = {
   Android: FaAndroid,
   iOS: FaAppStoreIos,
   Web: BsBrowserChrome,
+  Atari: SiAtari,
+  SEGA: SiSega,
 };
 
 export type PlatformType = keyof typeof platformIcons;
