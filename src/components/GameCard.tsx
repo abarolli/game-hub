@@ -4,6 +4,7 @@ import { Badge, Card, HStack, Image } from "@chakra-ui/react";
 
 import { PlatformType } from "@/uiConfigs/platformIcons";
 import Entity from "./Entity";
+import { LuGamepad } from "react-icons/lu";
 
 export interface Platform extends Entity {
   name: PlatformType;
@@ -18,9 +19,9 @@ export interface GameProps extends Entity {
 }
 
 function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
-  const platformsAsIcons = platforms.map((platform) => (
-    <platform.icon key={platform.id} />
-  ));
+  const platformsAsIcons = platforms.map((platform) =>
+    platform.icon ? <platform.icon key={platform.id} /> : <LuGamepad />
+  );
 
   return (
     <Card.Root rounded="xl">
