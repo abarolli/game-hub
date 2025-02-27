@@ -99,7 +99,7 @@ function App() {
               id: platform.id,
               label: platform.name,
               value: platform.name,
-            };
+            } as SelectionInfo;
           }),
         })
       );
