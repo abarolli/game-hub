@@ -30,7 +30,9 @@ function GameCard({ gameTitle, imgSrc, criticScore, platforms }: GameProps) {
       );
     }
     if (platforms.length - MAX_ICONS > 0)
-      platformsAsIcons.push(<Text>+{platforms.length - MAX_ICONS}</Text>);
+      platformsAsIcons.push(
+        <Text key={-1}>+{platforms.length - MAX_ICONS}</Text>
+      );
 
     return platformsAsIcons;
   };
