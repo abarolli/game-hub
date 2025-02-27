@@ -93,10 +93,17 @@ function App() {
       return { label: platform, value: platform };
     }),
   });
+
+  const searchHandler: SubmitHandler<SearchForm> = (data) => {
+    gamesHttpService
+      .find({ search: data.searchValue })
+      .then((games) => updateGames(games));
+  };
+
   return (
     <>
       <Box mb="30px">
-        <NavBar />
+        <NavBar onSubmit={searchHandler} />
       </Box>
       <Flex>
         <Box w="300px" p="20px">
