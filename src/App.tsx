@@ -79,7 +79,7 @@ function App() {
   };
 
   const rawgGenreToGenreProps = (genre: RawgGenre): GenreProps => {
-    return { label: genre.name, imgSrc: genre.image_background };
+    return { id: genre.id, label: genre.name, imgSrc: genre.image_background };
   };
 
   const populateGenres = () => {
@@ -122,6 +122,10 @@ function App() {
       .then((games) => updateGames(games));
   };
 
+  const genreClickHandler = (id: number) => {
+    gamesHttpService.find({ genres: id }).then((games) => updateGames(games));
+  };
+
   return (
     <>
       <Box mb="30px">
@@ -131,7 +135,7 @@ function App() {
         <Flex maxW="1500px" w="100%">
           <Box w="300px" p="20px">
             <Heading mb="30px">Genres</Heading>
-            <GenreList genres={genres} />
+            <GenreList genres={genres} onClick={genreClickHandler} />
           </Box>
           <SimpleGrid
             minChildWidth="xs"

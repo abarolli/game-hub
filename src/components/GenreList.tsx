@@ -3,12 +3,22 @@ import React from "react";
 
 import GenreListItem, { GenreProps } from "./GenreListItem";
 
-function GenreList({ genres }: { genres: GenreProps[] }) {
+interface GenreListProps {
+  genres: GenreProps[];
+  onClick: (id: number) => void;
+}
+
+function GenreList({ genres, onClick }: GenreListProps) {
   return (
     <Stack>
       {genres.map((genre) => (
-        <Box key={genre.label} mb="15px">
-          <GenreListItem label={genre.label} imgSrc={genre.imgSrc} />
+        <Box key={genre.id} mb="5px">
+          <GenreListItem
+            id={genre.id}
+            label={genre.label}
+            imgSrc={genre.imgSrc}
+            onClick={onClick}
+          />
         </Box>
       ))}
     </Stack>

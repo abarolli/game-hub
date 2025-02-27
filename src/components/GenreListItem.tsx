@@ -1,17 +1,22 @@
 import React from "react";
-import { HStack, Image, Text } from "@chakra-ui/react";
+import { HStack, Image, Text, Button } from "@chakra-ui/react";
 
-export interface GenreProps {
+import Entity from "./Entity";
+
+export interface GenreProps extends Entity {
   label: string;
   imgSrc: string;
+  onClick?: (id: number) => void;
 }
 
-function GenreListItem({ label, imgSrc }: GenreProps) {
+function GenreListItem({ id, label, imgSrc, onClick }: GenreProps) {
   return (
-    <HStack>
-      <Image mr="15px" w="60px" h="60px" src={imgSrc} borderRadius="xl" />
-      <Text>{label}</Text>
-    </HStack>
+    <Button p="10px" variant="ghost" onClick={() => onClick(id)} h="fit">
+      <HStack>
+        <Image mr="15px" w="50px" h="50px" src={imgSrc} borderRadius="xl" />
+        <Text>{label}</Text>
+      </HStack>
+    </Button>
   );
 }
 
