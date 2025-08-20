@@ -9,9 +9,9 @@ export interface GenreProps extends Entity {
 	onClick?: (id: number) => void;
 }
 
-function GenreListItem({ id, label, imgSrc, onClick }: GenreProps) {
+function GenreListItem({ id, label, imgSrc, className, onClick }: GenreProps & { className: string }) {
 	return (
-		<Button p="10px" variant="ghost" onClick={() => onClick && onClick(id)} h="fit">
+		<Button p="10px" variant="ghost" className={className} onClick={() => onClick && onClick(id)} h="fit">
 			<HStack>
 				<Image mr="15px" w="50px" h="50px" src={imgSrc} borderRadius="xl" />
 				<Text>{label}</Text>
